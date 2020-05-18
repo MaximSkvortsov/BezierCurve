@@ -2,8 +2,7 @@ class Canvas {
     constructor() {
         this.canvas = null;
         this.context = null;
-        this.pointsCoordinates = [];
-        this.ponts = [];
+        this.points = [];
     }
 
     createCanvas() {
@@ -25,17 +24,17 @@ class Canvas {
 
     setClickHandler() {
         this.canvas.addEventListener('click', (event) => {
-            this.pointsCoordinates.push(new pointsCoordinates(event.pageX, event.pageY));
+            const pointColor = '#e6b217';
+
+            this.createPoint(event.pageX, event.pageY, pointColor);
 
             this.drawPoints();
         })
     }
 
     drawPoints() {
-        this.pointsCoordinates.forEach((el) => {
-            const point = this.createPoint(el.x, el.y, '#e6b217');
-
-            document.body.appendChild(point);
+        this.points.forEach((el) => {
+            document.body.appendChild(el);
         });
     }
 
@@ -44,16 +43,7 @@ class Canvas {
 
         const point = new Point(x, y, pointSize, color).element;
 
-        this.ponts.push(point);
-
-        return point;
-    }
-}
-
-class pointsCoordinates {
-    constructor(x, y) {
-        this.x = x;
-        this.y = y;
+        this.points.push(point);
     }
 }
 
