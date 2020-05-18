@@ -11,6 +11,7 @@ class Canvas {
 
         this.setCanvasSize();
         this.setClickHandler();
+        this.setDropHandler();
 
         document.body.appendChild(this.canvas);
 
@@ -28,6 +29,22 @@ class Canvas {
 
             this.createPoint(event.pageX, event.pageY, pointColor);
 
+            this.rerender();
+        });
+    }
+
+    setDropHandler() {
+        this.canvas.addEventListener('ondragenter', (event) => {
+            event.preventDefault();
+        });
+
+        this.canvas.addEventListener('ondragover', (event) => {
+            event.preventDefault();
+        });
+
+        // this.canvas.ondrop = () => this.rerender();
+
+        this.canvas.addEventListener('drop', () => {
             this.rerender();
         });
     }
@@ -143,13 +160,29 @@ class Point {
         this.element.classList.add('point');
         this.element.style.width = `${size}px`;
         this.element.style.height = `${size}px`;
+        this.element.draggable = true;
 
         this.setCoordinates();
+        this.setDragHandlers();
     }
 
     setCoordinates() {
         this.element.style.left = `${this.x}px`;
         this.element.style.top = `${this.y}px`;
+    }
+
+    updateCoordinates(newX, newY) {
+        this.x = newX;
+        this.y = newY;
+
+        this.setCoordinates();
+    }
+
+    setDragHandlers() {
+        this.element.addEventListener('dragend', (event) => {
+            event.stopPropagation();
+            this.updateCoordinates(event.clientX - 5, event.clientY - 5);
+        })
     }
 }
 
