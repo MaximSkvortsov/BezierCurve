@@ -82,7 +82,7 @@ class Canvas {
             return;
         }
 
-        for (let t = 0; t < 1; t += 0.01) {
+        for (let t = 0; t < 1; t += 0.001) {
             const coorArray = this.points.map((el) => ({ x: el.x, y: el.y }));
 
             this.drawCurvesPoint(coorArray, t)
@@ -94,7 +94,8 @@ class Canvas {
             const point = points[0];
 
             this.context.beginPath();
-            this.context.arc(point.x, point.y, 2, 0, 2 * Math.PI);
+            this.context.arc(point.x + 5, point.y + 5, 0.5, 0, 2 * Math.PI);
+            this.context.strokeStyle = '#ff0000';
             this.context.stroke();
             this.context.closePath();
 
@@ -153,4 +154,3 @@ class Point {
 }
 
 window.onload = () => new Canvas().createCanvas();
-
