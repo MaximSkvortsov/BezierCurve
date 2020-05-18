@@ -29,21 +29,46 @@ class Canvas {
             this.createPoint(event.pageX, event.pageY, pointColor);
 
             this.drawPoints();
+            this.drawLine();
         })
     }
 
     drawPoints() {
         this.points.forEach((el) => {
-            document.body.appendChild(el);
+            document.body.appendChild(el.element);
         });
     }
 
     createPoint(x, y, color) {
         const pointSize = 10;
 
-        const point = new Point(x, y, pointSize, color).element;
+        const point = new Point(x - 5, y - 5, pointSize, color);
 
         this.points.push(point);
+    }
+
+    drawLine() {
+        if (this.points.length < 2) {
+            return;
+        }
+
+        const startPoint = this.points[0];
+
+        this.context.beginPath();
+        this.context.moveTo(startPoint.x + 5, startPoint.y + 5);
+
+        this.points.forEach((el, index) => {
+            if (index === 0) {
+                return;
+            }
+
+            this.context.lineTo(el.x + 5, el.y + 5);
+            this.context.lineWidth = 2;
+            this.context.strokeStyle = '#e6b217';
+            this.context.stroke();
+        })
+
+        this.context.closePath
     }
 }
 
@@ -57,7 +82,7 @@ class Point {
         this.element.classList.add('point');
         this.element.style.width = `${size}px`;
         this.element.style.height = `${size}px`;
-        
+
         this.setCoordinates();
     }
 
