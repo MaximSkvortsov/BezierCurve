@@ -28,9 +28,15 @@ class Canvas {
 
             this.createPoint(event.pageX, event.pageY, pointColor);
 
-            this.drawPoints();
-            this.drawLine();
-        })
+            this.rerender();
+        });
+    }
+
+    rerender() {
+        this.clearCanvas();
+        this.drawPoints();
+        this.drawLine();
+        this.drawBezierCurve();
     }
 
     drawPoints() {
@@ -68,7 +74,61 @@ class Canvas {
             this.context.stroke();
         })
 
-        this.context.closePath
+        this.context.closePath();
+    }
+
+    drawBezierCurve() {
+        if(this.points.length === 1) {
+            return;
+        }
+
+        for (let t = 0; t < 1; t += 0.01) {
+            const coorArray = this.points.map((el) => ({ x: el.x, y: el.y }));
+
+            this.drawCurvesPoint(coorArray, t)
+        }
+    }
+
+    drawCurvesPoint(points, t) {
+        if (points.length === 1) {
+            const point = points[0];
+
+            this.context.beginPath();
+            this.context.arc(point.x, point.y, 2, 0, 2 * Math.PI);
+            this.context.stroke();
+            this.context.closePath();
+
+            return;
+        }
+
+        const newPoints = [];
+
+        points.forEach((el, index, array) => {
+            if (index === 0) {
+                return;
+            }
+
+            const prevEl = array[index - 1];
+
+            const d = this.getDistance(prevEl, el);
+
+            const newPoint = { x: prevEl.x + (d.dx * t), y: prevEl.y + (d.dy * t) };
+            newPoints.push(newPoint);
+        })
+
+        this.drawCurvesPoint(newPoints, t);
+    }
+
+    getDistance(pointFrom, pointTo) {
+        const dx = pointTo.x - pointFrom.x;
+        const dy = pointTo.y - pointFrom.y;
+
+        return { dx, dy };
+    }
+
+    clearCanvas() {
+        this.context.fillStyle = 'rgb(255, 255, 255)';
+        this.context.fillRect(0, 0, window.innerWidth, window.innerHeight);
     }
 }
 
