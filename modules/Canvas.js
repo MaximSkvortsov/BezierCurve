@@ -47,7 +47,7 @@ class Canvas {
     rerender() {
         this.clearCanvas();
         this.drawPoints();
-        this.drawLine();
+        this.drawLine(this.points, config.supportColor);
         this.drawBezierCurve();
     }
 
@@ -63,8 +63,8 @@ class Canvas {
         this.points.push(point);
     }
 
-    drawLine() {
-        if (this.points.length < 2) {
+    drawLine(points, color) {
+        if (points.length < 2) {
             return;
         }
 
@@ -73,14 +73,14 @@ class Canvas {
         this.context.beginPath();
         this.context.moveTo(startPoint.x + config.pointCoorOffset, startPoint.y + config.pointCoorOffset);
 
-        this.points.forEach((el, index) => {
+        points.forEach((el, index) => {
             if (index === 0) {
                 return;
             }
 
             this.context.lineTo(el.x + config.pointCoorOffset, el.y + config.pointCoorOffset);
             this.context.lineWidth = config.supportLineWidth;
-            this.context.strokeStyle = config.supportColor;
+            this.context.strokeStyle = color;
             this.context.stroke();
         })
 
@@ -127,6 +127,7 @@ class Canvas {
             newPoints.push(newPoint);
         })
 
+        this.drawLine(newPoints, randomColor)
         this.drawCurvesPoint(newPoints, t);
     }
 
