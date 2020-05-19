@@ -12,18 +12,18 @@ canvas {
     position: absolute;
 }
 
-.animate-button {
+.button-container {
     position: absolute;
     top: 1%;
+    left: 1%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.button {
     border: 1px solid black;
     padding: 5px;
     z-index: 10;
-}
-
-.start {
-    left: 1%;
-}
-
-.stop {
-    left: 7%;
+    margin-left: 10px;
+    cursor: pointer;
 }

@@ -6,6 +6,7 @@ class Canvas {
         this.canvas = null;
         this.context = null;
         this.points = [];
+        this.animationIntervalID = null;
     }
 
     createCanvas() {
@@ -47,7 +48,6 @@ class Canvas {
 
     rerender() {
         this.clearCanvas();
-        // this.drawPoints();
         this.drawLine(this.points, config.supportColor);
         this.drawBezierCurve();
     }
@@ -92,7 +92,7 @@ class Canvas {
         }
 
         const coorArray = this.points.map((el) => ({ x: el.x, y: el.y }));
-        
+
         for (let t = 0; t < 1; t += config.tStep) {
 
             this.drawCurvesPoint(coorArray, t, config.curvesColor, config.curvesPointRadius);
@@ -147,18 +147,31 @@ class Canvas {
     }
 
     drawAnimation() {
-
         if (this.points.length > 2) {
             const coorArray = this.points.map((el) => ({ x: el.x, y: el.y }));
+            let t = 0;
 
-            for (let t = 0; t <= 1; t += config.tStep) {
-
-                setTimeout(() => {
-                    this.rerender();
-                    this.drawCurvesPoint(coorArray, t, config.curvesAnimatePointColor, config.curvesPointRadius + 6, true);
-                }, t);
-            }
+            this.animationIntervalID = setInterval(() => {
+                if (t >= 1) {
+                    this.stopAnimation();
+                    return;
+                }
+                this.rerender();
+                this.drawCurvesPoint(coorArray, t, config.curvesAnimatePointColor, config.curvesPointRadius + 6, true);
+                t += 0.005;
+            }, 50);
         }
+    }
+
+    stopAnimation() {
+        clearInterval(this.animationIntervalID);
+        this.rerender();
+    }
+
+    reset() {
+        this.points = [];
+        this.animationIntervalID = null;
+        this.clearCanvas();
     }
 }
 
