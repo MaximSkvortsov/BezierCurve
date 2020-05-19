@@ -145,15 +145,13 @@ class Canvas {
     }
 
     drawAnimation() {
-        const randomLineColor = Math.floor(Math.random() * 16777215).toString(16);
-
         for (let t = 0; t < 1; t += config.tStep) {
             const coorArray = this.points.map((el) => ({ x: el.x, y: el.y }));
             
             setInterval(() => {
                 this.rerender();
-                this.drawCurvesPoint(coorArray, t, config.curvesAnimatePointColor, config.curvesPointRadius + 3, (points) => {
-                    this.drawLine(points, `#${randomLineColor}`);
+                this.drawCurvesPoint(coorArray, t, config.curvesAnimatePointColor, config.curvesPointRadius + 6, (points) => {
+                    this.drawLine(points, config.curvesAnimateLineColor);
                 });
             }, t);
         }
