@@ -10,6 +10,7 @@ canvas {
 .point {
     border-radius: 50%;
     position: absolute;
+    cursor: grab;
 }
 
 .button-container {

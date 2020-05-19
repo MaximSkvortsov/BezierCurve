@@ -39,6 +39,7 @@ class Canvas {
     setDropHandler() {
         document.body.addEventListener('dragover', (event) => {
             event.preventDefault();
+            window.requestAnimationFrame(() => this.rerender());
         });
 
         document.body.addEventListener('drop', () => {
