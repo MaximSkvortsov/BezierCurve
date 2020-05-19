@@ -34,17 +34,11 @@ class Canvas {
     }
 
     setDropHandler() {
-        this.canvas.addEventListener('ondragenter', (event) => {
+        document.body.addEventListener('dragover', (event) => {
             event.preventDefault();
         });
 
-        this.canvas.addEventListener('ondragover', (event) => {
-            event.preventDefault();
-        });
-
-        // this.canvas.ondrop = () => this.rerender();
-
-        this.canvas.addEventListener('drop', () => {
+        document.body.addEventListener('drop', () => {
             this.rerender();
         });
     }
@@ -179,10 +173,15 @@ class Point {
     }
 
     setDragHandlers() {
+        this.element.addEventListener('drag', (event) => {
+            event.stopPropagation();
+            this.updateCoordinates(event.clientX - 5, event.clientY - 5);
+        });
+
         this.element.addEventListener('dragend', (event) => {
             event.stopPropagation();
             this.updateCoordinates(event.clientX - 5, event.clientY - 5);
-        })
+        });
     }
 }
 
