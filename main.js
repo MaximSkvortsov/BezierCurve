@@ -4,13 +4,13 @@ window.onload = () => {
     const canvas = new Canvas();
     canvas.createCanvas();
 
-    const startAnimateButton = document.querySelector('.start');
+    const startAnimationButton = document.querySelector('.start');
 
-    startAnimateButton.addEventListener('click', () => canvas.drawAnimation());
+    startAnimationButton.addEventListener('click', () => canvas.drawAnimation());
 
-    const stopAnimateButton = document.querySelector('.stop');
+    const stopAnimationButton = document.querySelector('.stop');
 
-    stopAnimateButton.addEventListener('click', () => canvas.stopAnimation());
+    stopAnimationButton.addEventListener('click', () => canvas.stopAnimation());
 
     const resetButtom = document.querySelector('.reset');
 
