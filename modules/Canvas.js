@@ -68,16 +68,14 @@ class Canvas {
             return;
         }
 
-        const startPoint = this.points[0];
-
         this.context.beginPath();
-        this.context.moveTo(startPoint.x + config.pointCoorOffset, startPoint.y + config.pointCoorOffset);
-
-        points.forEach((el, index) => {
+        
+        points.forEach((el, index, array) => {
             if (index === 0) {
                 return;
             }
-
+            
+            this.context.moveTo(array[index - 1].x + config.pointCoorOffset, array[index - 1].y + config.pointCoorOffset);
             this.context.lineTo(el.x + config.pointCoorOffset, el.y + config.pointCoorOffset);
             this.context.lineWidth = config.supportLineWidth;
             this.context.strokeStyle = color;
@@ -88,24 +86,24 @@ class Canvas {
     }
 
     drawBezierCurve() {
-        if(this.points.length === 1) {
+        if (this.points.length === 1) {
             return;
         }
 
         for (let t = 0; t < 1; t += config.tStep) {
             const coorArray = this.points.map((el) => ({ x: el.x, y: el.y }));
 
-            this.drawCurvesPoint(coorArray, t)
+            this.drawCurvesPoint(coorArray, t, config.curvesColor, config.curvesPointRadius);
         }
     }
 
-    drawCurvesPoint(points, t) {
+    drawCurvesPoint(points, t, color, size, linesDrawCallback) {
         if (points.length === 1) {
             const point = points[0];
 
             this.context.beginPath();
-            this.context.arc(point.x + config.pointCoorOffset, point.y + config.pointCoorOffset, config.curvesPointRadius, 0, 2 * Math.PI);
-            this.context.strokeStyle = config.curvesColor;
+            this.context.arc(point.x + config.pointCoorOffset, point.y + config.pointCoorOffset, size, 0, 2 * Math.PI);
+            this.context.strokeStyle = color;
             this.context.stroke();
             this.context.closePath();
 
@@ -125,9 +123,13 @@ class Canvas {
 
             const newPoint = { x: prevEl.x + (d.dx * t), y: prevEl.y + (d.dy * t) };
             newPoints.push(newPoint);
-        })
+        });
 
-        this.drawCurvesPoint(newPoints, t);
+        if (linesDrawCallback) {
+            linesDrawCallback(newPoints);
+        }
+
+        this.drawCurvesPoint(newPoints, t, color, size, linesDrawCallback);
     }
 
     getDistance(pointFrom, pointTo) {
@@ -140,6 +142,21 @@ class Canvas {
     clearCanvas() {
         this.context.fillStyle = 'rgb(255, 255, 255)';
         this.context.fillRect(0, 0, window.innerWidth, window.innerHeight);
+    }
+
+    drawAnimation() {
+        const randomLineColor = Math.floor(Math.random() * 16777215).toString(16);
+
+        for (let t = 0; t < 1; t += config.tStep) {
+            const coorArray = this.points.map((el) => ({ x: el.x, y: el.y }));
+            
+            setInterval(() => {
+                this.rerender();
+                this.drawCurvesPoint(coorArray, t, config.curvesAnimatePointColor, config.curvesPointRadius + 3, (points) => {
+                    this.drawLine(points, `#${randomLineColor}`);
+                });
+            }, t);
+        }
     }
 }
 
