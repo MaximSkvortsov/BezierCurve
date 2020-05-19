@@ -1,3 +1,6 @@
+import { Point } from './Point.js';
+import { config } from '../config.js';
+
 class Canvas {
     constructor() {
         this.canvas = null;
@@ -25,9 +28,7 @@ class Canvas {
 
     setClickHandler() {
         this.canvas.addEventListener('click', (event) => {
-            const pointColor = '#e6b217';
-
-            this.createPoint(event.pageX, event.pageY, pointColor);
+            this.createPoint(event.pageX, event.pageY, config.supportColor);
 
             this.rerender();
         });
@@ -57,9 +58,7 @@ class Canvas {
     }
 
     createPoint(x, y, color) {
-        const pointSize = 10;
-
-        const point = new Point(x - 5, y - 5, pointSize, color);
+        const point = new Point(x - config.pointCoorOffset, y - config.pointCoorOffset, config.pointSize, color);
 
         this.points.push(point);
     }
@@ -72,16 +71,16 @@ class Canvas {
         const startPoint = this.points[0];
 
         this.context.beginPath();
-        this.context.moveTo(startPoint.x + 5, startPoint.y + 5);
+        this.context.moveTo(startPoint.x + config.pointCoorOffset, startPoint.y + config.pointCoorOffset);
 
         this.points.forEach((el, index) => {
             if (index === 0) {
                 return;
             }
 
-            this.context.lineTo(el.x + 5, el.y + 5);
-            this.context.lineWidth = 2;
-            this.context.strokeStyle = '#e6b217';
+            this.context.lineTo(el.x + config.pointCoorOffset, el.y + config.pointCoorOffset);
+            this.context.lineWidth = config.supportLineWidth;
+            this.context.strokeStyle = config.supportColor;
             this.context.stroke();
         })
 
@@ -93,7 +92,7 @@ class Canvas {
             return;
         }
 
-        for (let t = 0; t < 1; t += 0.001) {
+        for (let t = 0; t < 1; t += config.tStep) {
             const coorArray = this.points.map((el) => ({ x: el.x, y: el.y }));
 
             this.drawCurvesPoint(coorArray, t)
@@ -105,8 +104,8 @@ class Canvas {
             const point = points[0];
 
             this.context.beginPath();
-            this.context.arc(point.x + 5, point.y + 5, 0.5, 0, 2 * Math.PI);
-            this.context.strokeStyle = '#ff0000';
+            this.context.arc(point.x + config.pointCoorOffset, point.y + config.pointCoorOffset, config.curvesPointRadius, 0, 2 * Math.PI);
+            this.context.strokeStyle = config.curvesColor;
             this.context.stroke();
             this.context.closePath();
 
@@ -144,45 +143,4 @@ class Canvas {
     }
 }
 
-class Point {
-    constructor(x, y, size, color) {
-        this.x = x;
-        this.y = y;
-        this.element = document.createElement('div');
-
-        this.element.style.backgroundColor = color;
-        this.element.classList.add('point');
-        this.element.style.width = `${size}px`;
-        this.element.style.height = `${size}px`;
-        this.element.draggable = true;
-
-        this.setCoordinates();
-        this.setDragHandlers();
-    }
-
-    setCoordinates() {
-        this.element.style.left = `${this.x}px`;
-        this.element.style.top = `${this.y}px`;
-    }
-
-    updateCoordinates(newX, newY) {
-        this.x = newX;
-        this.y = newY;
-
-        this.setCoordinates();
-    }
-
-    setDragHandlers() {
-        this.element.addEventListener('drag', (event) => {
-            event.stopPropagation();
-            this.updateCoordinates(event.clientX - 5, event.clientY - 5);
-        });
-
-        this.element.addEventListener('dragend', (event) => {
-            event.stopPropagation();
-            this.updateCoordinates(event.clientX - 5, event.clientY - 5);
-        });
-    }
-}
-
-window.onload = () => new Canvas().createCanvas();
+export { Canvas };
