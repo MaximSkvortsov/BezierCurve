@@ -127,7 +127,6 @@ class Canvas {
             newPoints.push(newPoint);
         })
 
-        this.drawLine(newPoints, randomColor)
         this.drawCurvesPoint(newPoints, t);
     }
 
