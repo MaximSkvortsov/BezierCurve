@@ -151,9 +151,9 @@ class Canvas {
         if (this.points.length > 2) {
             const coorArray = this.points.map((el) => ({ x: el.x, y: el.y }));
 
-            for (let t = 0; t < 1; t += config.tStep) {
+            for (let t = 0; t <= 1; t += config.tStep) {
 
-                setInterval(() => {
+                setTimeout(() => {
                     this.rerender();
                     this.drawCurvesPoint(coorArray, t, config.curvesAnimatePointColor, config.curvesPointRadius + 6, true);
                 }, t);
