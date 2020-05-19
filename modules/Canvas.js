@@ -31,6 +31,7 @@ class Canvas {
             this.createPoint(event.pageX, event.pageY, config.supportColor);
 
             this.rerender();
+            this.drawPoints();
         });
     }
 
@@ -46,7 +47,7 @@ class Canvas {
 
     rerender() {
         this.clearCanvas();
-        this.drawPoints();
+        // this.drawPoints();
         this.drawLine(this.points, config.supportColor);
         this.drawBezierCurve();
     }
@@ -69,12 +70,12 @@ class Canvas {
         }
 
         this.context.beginPath();
-        
+
         points.forEach((el, index, array) => {
             if (index === 0) {
                 return;
             }
-            
+
             this.context.moveTo(array[index - 1].x + config.pointCoorOffset, array[index - 1].y + config.pointCoorOffset);
             this.context.lineTo(el.x + config.pointCoorOffset, el.y + config.pointCoorOffset);
             this.context.lineWidth = config.supportLineWidth;
@@ -90,14 +91,15 @@ class Canvas {
             return;
         }
 
+        const coorArray = this.points.map((el) => ({ x: el.x, y: el.y }));
+        
         for (let t = 0; t < 1; t += config.tStep) {
-            const coorArray = this.points.map((el) => ({ x: el.x, y: el.y }));
 
             this.drawCurvesPoint(coorArray, t, config.curvesColor, config.curvesPointRadius);
         }
     }
 
-    drawCurvesPoint(points, t, color, size, linesDrawCallback) {
+    drawCurvesPoint(points, t, color, size, isAnimation) {
         if (points.length === 1) {
             const point = points[0];
 
@@ -125,11 +127,11 @@ class Canvas {
             newPoints.push(newPoint);
         });
 
-        if (linesDrawCallback) {
-            linesDrawCallback(newPoints);
+        if (isAnimation) {
+            this.drawLine(newPoints, config.curvesAnimateLineColor);
         }
 
-        this.drawCurvesPoint(newPoints, t, color, size, linesDrawCallback);
+        this.drawCurvesPoint(newPoints, t, color, size, isAnimation);
     }
 
     getDistance(pointFrom, pointTo) {
@@ -145,15 +147,17 @@ class Canvas {
     }
 
     drawAnimation() {
-        for (let t = 0; t < 1; t += config.tStep) {
+
+        if (this.points.length > 2) {
             const coorArray = this.points.map((el) => ({ x: el.x, y: el.y }));
-            
-            setInterval(() => {
-                this.rerender();
-                this.drawCurvesPoint(coorArray, t, config.curvesAnimatePointColor, config.curvesPointRadius + 6, (points) => {
-                    this.drawLine(points, config.curvesAnimateLineColor);
-                });
-            }, t);
+
+            for (let t = 0; t < 1; t += config.tStep) {
+
+                setInterval(() => {
+                    this.rerender();
+                    this.drawCurvesPoint(coorArray, t, config.curvesAnimatePointColor, config.curvesPointRadius + 6, true);
+                }, t);
+            }
         }
     }
 }

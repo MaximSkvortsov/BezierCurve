@@ -15,8 +15,15 @@ canvas {
 .animate-button {
     position: absolute;
     top: 1%;
-    left: 1%;
     border: 1px solid black;
     padding: 5px;
     z-index: 10;
+}
+
+.start {
+    left: 1%;
+}
+
+.stop {
+    left: 7%;
 }
