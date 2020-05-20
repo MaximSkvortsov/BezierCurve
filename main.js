@@ -17,6 +17,7 @@ window.onload = () => {
     resetButtom.addEventListener('click', () => {
         canvas.points.forEach((el) => document.body.removeChild(el.element));
 
+        canvas.stopAnimation();
         canvas.reset();
     });
 }
