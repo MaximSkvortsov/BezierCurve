@@ -19,7 +19,7 @@ class Canvas {
 
         document.body.appendChild(this.canvas);
 
-        window.addEventListener('resize', () => this.setCanvasSize());
+        window.addEventListener('resize', this.setCanvasSize);
     }
 
     setCanvasSize() {
@@ -42,9 +42,7 @@ class Canvas {
             window.requestAnimationFrame(() => this.rerender());
         });
 
-        document.body.addEventListener('drop', () => {
-            this.rerender();
-        });
+        document.body.addEventListener('drop', this.rerender);
     }
 
     rerender() {
